@@ -1,6 +1,9 @@
 package com.mmall.dao;
 
 import com.mmall.pojo.Cart;
+import com.mmall.pojo.Product;
+
+import java.util.List;
 
 public interface CartMapper {
     int deleteByPrimaryKey(Integer id);
@@ -14,4 +17,10 @@ public interface CartMapper {
     int updateByPrimaryKeySelective(Cart record);
 
     int updateByPrimaryKey(Cart record);
+    List<Cart> getListByUserId(Integer userId);
+    int selectNotCheckedByUserId(Integer userId);
+    Cart selectByProductIdUserId(Integer userId,Integer ProductId);
+    int deleteByUserIdProductIds(Integer userId,List<String> ProductIdList);
+    int checkedOrUncheckedProduct(Integer userId,Integer ProductId,Integer checked);
+    int selectCartProductCount(Integer userId);
 }
