@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 //google的guava缓存
 import java.util.concurrent.TimeUnit;
 
+
 public class TokenCache {
     public static final String TOKEN_PREFIX = "token_";
     public static Logger logger=LoggerFactory.getLogger(TokenCache.class);

@@ -37,7 +37,7 @@ public class ShippingController {
         }
         return  shippingService.delete(shippingId);
     }
-    @RequestMapping("del.do")
+    @RequestMapping("update.do")
     @ResponseBody
     public ServerResponse update(HttpSession session, Shipping shipping){
         User user = (User)session.getAttribute(Const.CURRENT_USER);

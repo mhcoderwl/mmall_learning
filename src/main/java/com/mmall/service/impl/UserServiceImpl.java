@@ -6,7 +6,6 @@ import com.mmall.dao.UserMapper;
 import com.mmall.service.IUserService;
 import com.mmall.pojo.User;
 import com.mmall.util.MD5Util;
-import jdk.nashorn.internal.parser.Token;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.mmall.common.Const;
@@ -81,6 +80,10 @@ public class UserServiceImpl implements IUserService{
         return ServerResponse.createByErrorMessage("该用户未设置找回密码问题");
     }
 
+
+    /**
+     如果正确需要缓存一个token，用于重置密码时校验
+     */
     @Override
     public ServerResponse<String> checkQuestionAnswer(String username, String question, String answer) {
         int count=userMapper.checkAnswer(username,question,answer);

@@ -19,6 +19,7 @@ public interface CartMapper {
     int updateByPrimaryKey(Cart record);
     List<Cart> getListByUserId(Integer userId);
     int selectNotCheckedByUserId(Integer userId);
+    List<Cart> selectCheckedByUserId(Integer userId);
     Cart selectByProductIdUserId(Integer userId,Integer ProductId);
     int deleteByUserIdProductIds(Integer userId,List<String> ProductIdList);
     int checkedOrUncheckedProduct(Integer userId,Integer ProductId,Integer checked);

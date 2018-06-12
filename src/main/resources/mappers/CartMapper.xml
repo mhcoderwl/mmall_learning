@@ -126,6 +126,10 @@
     FROM mmall_cart
     WHERE user_id=#{userId} AND checked=0
   </select>
+  <select id="selectCheckedByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    SELECT <include refid="Base_Column_List"/>
+    FROM mmall_user WHERE user_id=#{userid} AND checked=1
+  </select>
   <select id="selectByProductIdUserId" parameterType="java.util.Map" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>
