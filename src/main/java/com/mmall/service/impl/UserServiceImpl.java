@@ -5,6 +5,7 @@ import com.mmall.common.TokenCache;
 import com.mmall.dao.UserMapper;
 import com.mmall.service.IUserService;
 import com.mmall.pojo.User;
+import com.mmall.util.JedisUtil;
 import com.mmall.util.MD5Util;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,8 +90,9 @@ public class UserServiceImpl implements IUserService{
         int count=userMapper.checkAnswer(username,question,answer);
         if(count>0){
             String forgetToken=UUID.randomUUID().toString();
-            //设置缓存
-            TokenCache.setKey(TokenCache.TOKEN_PREFIX+username,forgetToken);
+            //设置缓存，迁移到redis
+            //TokenCache.setKey(TokenCache.TOKEN_PREFIX+username,forgetToken);
+            JedisUtil.setex(Const.TOKEN_PREFIX+username,forgetToken,60*60*12);
             return ServerResponse.createBySuccess(forgetToken);
         }
         return ServerResponse.createByErrorMessage("问题答案错误");
@@ -108,7 +110,7 @@ public class UserServiceImpl implements IUserService{
         if(response.isSuccess()){
             return ServerResponse.createByErrorMessage("用户不存在");
         }
-        String token= TokenCache.getKey(TokenCache.TOKEN_PREFIX+username);
+        String token= JedisUtil.get(Const.TOKEN_PREFIX+username);
         if(StringUtils.isBlank(token)){
             return ServerResponse.createByErrorMessage("token无效或已过期");
         }

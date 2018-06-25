@@ -10,6 +10,9 @@ import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
 import com.mmall.service.IOrderService;
+import com.mmall.util.CookieUtil;
+import com.mmall.util.JedisUtil;
+import com.mmall.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +33,12 @@ public class OrderController {
     private IOrderService orderService;
     @RequestMapping("pay.do")
     @ResponseBody
-    public ServerResponse pay(HttpSession session, Long orderNo, HttpServletRequest request){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user ==null){
+    public ServerResponse pay( Long orderNo, HttpServletRequest request){
+        String userStr=JedisUtil.get(CookieUtil.readLoginToken(request));
+        if(userStr ==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getStatus(),ResponseCode.NEED_LOGIN.getDesc());
         }
+        User user= JsonUtil.string2Obj(userStr,User.class);
         String path = request.getSession().getServletContext().getRealPath("upload");
         return orderService.pay(orderNo,user.getId(),path);
     }
@@ -75,12 +79,12 @@ public class OrderController {
     //查询订单支付状态用来前台在扫码完成支付轮询结果
     @RequestMapping("query_order_pay_status.do")
     @ResponseBody
-    public ServerResponse<Boolean> queryOrderPayStatus(HttpSession session, Long orderNo){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user ==null){
+    public ServerResponse<Boolean> queryOrderPayStatus(HttpServletRequest request, Long orderNo){
+        String userStr=JedisUtil.get(CookieUtil.readLoginToken(request));
+        if(userStr ==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getStatus(),ResponseCode.NEED_LOGIN.getDesc());
         }
-
+        User user= JsonUtil.string2Obj(userStr,User.class);
         ServerResponse serverResponse = orderService.queryOrderPayStatus(user.getId(),orderNo);
         if(serverResponse.isSuccess()){
             return ServerResponse.createBySuccess(true);
@@ -90,31 +94,34 @@ public class OrderController {
 
     @RequestMapping("create.do")
     @ResponseBody
-    public ServerResponse create(Integer shippingId,HttpSession session){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user ==null){
+    public ServerResponse create(Integer shippingId,HttpServletRequest request){
+        String userStr=JedisUtil.get(CookieUtil.readLoginToken(request));
+        if(userStr ==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getStatus(),ResponseCode.NEED_LOGIN.getDesc());
         }
+        User user= JsonUtil.string2Obj(userStr,User.class);
         return orderService.createOrder(user.getId(),shippingId);
     }
     @RequestMapping("cancel.do")
     @ResponseBody
-    public ServerResponse cancel(HttpSession session, Long orderNo){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user ==null){
+    public ServerResponse cancel(HttpServletRequest request, Long orderNo){
+        String userStr=JedisUtil.get(CookieUtil.readLoginToken(request));
+        if(userStr ==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getStatus(),ResponseCode.NEED_LOGIN.getDesc());
         }
+        User user= JsonUtil.string2Obj(userStr,User.class);
         return orderService.cancel(user.getId(),orderNo);
     }
 
 
     @RequestMapping("get_order_cart_product.do")
     @ResponseBody
-    public ServerResponse getOrderCartProduct(HttpSession session){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user ==null){
+    public ServerResponse getOrderCartProduct(HttpServletRequest request){
+        String userStr=JedisUtil.get(CookieUtil.readLoginToken(request));
+        if(userStr ==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getStatus(),ResponseCode.NEED_LOGIN.getDesc());
         }
+        User user= JsonUtil.string2Obj(userStr,User.class);
         return orderService.getOrderCartProduct(user.getId());
     }
 
@@ -122,11 +129,12 @@ public class OrderController {
 
     @RequestMapping("detail.do")
     @ResponseBody
-    public ServerResponse detail(HttpSession session,Long orderNo){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user ==null){
+    public ServerResponse detail(HttpServletRequest request,Long orderNo){
+        String userStr=JedisUtil.get(CookieUtil.readLoginToken(request));
+        if(userStr ==null){
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getStatus(),ResponseCode.NEED_LOGIN.getDesc());
         }
+        User user= JsonUtil.string2Obj(userStr,User.class);
         return orderService.getOrderDetail(user.getId(),orderNo);
     }
 

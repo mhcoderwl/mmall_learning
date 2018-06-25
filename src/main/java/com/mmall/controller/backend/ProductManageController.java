@@ -9,6 +9,9 @@ import com.mmall.pojo.User;
 import com.mmall.service.IFileService;
 import com.mmall.service.IProductService;
 import com.mmall.service.IUserService;
+import com.mmall.util.CookieUtil;
+import com.mmall.util.JedisUtil;
+import com.mmall.util.JsonUtil;
 import com.mmall.util.PropertiesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,12 +36,12 @@ public class ProductManageController {
     private IFileService fileService;
     @RequestMapping("save.do")
     @ResponseBody
-    public ServerResponse productSave(HttpSession session, Product product){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getStatus(),"用户未登录,请登录管理员");
-
+    public ServerResponse productSave(HttpServletRequest request, Product product){
+        String userStr=JedisUtil.get(CookieUtil.readLoginToken(request));
+        if(userStr==null){
+            return ServerResponse.createByErrorMessage("当前用户未登录");
         }
+        User user= JsonUtil.string2Obj(userStr,User.class);
         if(userService.checkAdminRole(user).isSuccess()){
             //填充我们增加产品的业务逻辑
             return productService.saveOrUpdateProduct(product);
@@ -49,12 +52,12 @@ public class ProductManageController {
 
     @RequestMapping("set_sale_status.do")
     @ResponseBody
-    public ServerResponse setSaleStatus(HttpSession session, Integer productId,Integer status){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getStatus(),"用户未登录,请登录管理员");
-
+    public ServerResponse setSaleStatus(HttpServletRequest request, Integer productId,Integer status){
+        String userStr=JedisUtil.get(CookieUtil.readLoginToken(request));
+        if(userStr==null){
+            return ServerResponse.createByErrorMessage("当前用户未登录");
         }
+        User user= JsonUtil.string2Obj(userStr,User.class);
         if(userService.checkAdminRole(user).isSuccess()){
             return productService.setSaleStatus(productId,status);
         }else{
@@ -63,12 +66,12 @@ public class ProductManageController {
     }
     @RequestMapping("detail.do")
     @ResponseBody
-    public ServerResponse getDetail(HttpSession session, Integer productId){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getStatus(),"用户未登录,请登录管理员");
-
+    public ServerResponse getDetail(HttpServletRequest request, Integer productId){
+        String userStr=JedisUtil.get(CookieUtil.readLoginToken(request));
+        if(userStr==null){
+            return ServerResponse.createByErrorMessage("当前用户未登录");
         }
+        User user= JsonUtil.string2Obj(userStr,User.class);
         if(userService.checkAdminRole(user).isSuccess()){
             //填充业务
             return productService.manageProductDetail(productId);
@@ -79,12 +82,12 @@ public class ProductManageController {
     @RequestMapping("list.do")
     @ResponseBody
     //展示商品时需要页面大小和页数来展示
-    public ServerResponse getList(HttpSession session, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getStatus(),"用户未登录,请登录管理员");
-
+    public ServerResponse getList(HttpServletRequest request, @RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
+        String userStr=JedisUtil.get(CookieUtil.readLoginToken(request));
+        if(userStr==null){
+            return ServerResponse.createByErrorMessage("当前用户未登录");
         }
+        User user= JsonUtil.string2Obj(userStr,User.class);
         if(userService.checkAdminRole(user).isSuccess()){
             //填充业务
             return productService.getProductList(pageNum,pageSize);
@@ -94,12 +97,12 @@ public class ProductManageController {
     }
     @RequestMapping("search.do")
     @ResponseBody
-    public ServerResponse searchProduct(HttpSession session,@RequestParam(value = "productName" ,required = false)String productName,@RequestParam(value="productID" ,required = false)Integer productID,@RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getStatus(),"用户未登录,请登录管理员");
-
+    public ServerResponse searchProduct(HttpServletRequest request,@RequestParam(value = "productName" ,required = false)String productName,@RequestParam(value="productID" ,required = false)Integer productID,@RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize){
+        String userStr=JedisUtil.get(CookieUtil.readLoginToken(request));
+        if(userStr==null){
+            return ServerResponse.createByErrorMessage("当前用户未登录");
         }
+        User user= JsonUtil.string2Obj(userStr,User.class);
         if(userService.checkAdminRole(user).isSuccess()){
             //填充业务
             return productService.searchProduct(productName,productID,pageNum,pageSize);
@@ -109,12 +112,12 @@ public class ProductManageController {
     }
     @RequestMapping("upload.do")
     @ResponseBody
-    public ServerResponse upload(HttpSession session,@RequestParam(value = "upload_file",required = false)MultipartFile file, HttpServletRequest request){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getStatus(),"用户未登录,请登录管理员");
-
+    public ServerResponse upload(@RequestParam(value = "upload_file",required = false)MultipartFile file, HttpServletRequest request){
+        String userStr=JedisUtil.get(CookieUtil.readLoginToken(request));
+        if(userStr==null){
+            return ServerResponse.createByErrorMessage("当前用户未登录");
         }
+        User user= JsonUtil.string2Obj(userStr,User.class);
         if(userService.checkAdminRole(user).isSuccess()) {
             String path = request.getSession().getServletContext().getRealPath("upload");//得到upload文件夹在运行时的路径
 
@@ -132,8 +135,10 @@ public class ProductManageController {
     }
     @RequestMapping("richtext_img_upload.do")
     @ResponseBody
-    public Map richTextImgUpload(HttpSession session, @RequestParam("upload_file") MultipartFile file, HttpServletRequest request, HttpServletResponse response){
-        User user = (User)session.getAttribute(Const.CURRENT_USER);
+    public Map richTextImgUpload(@RequestParam("upload_file") MultipartFile file, HttpServletRequest request, HttpServletResponse response){
+        String userStr=JedisUtil.get(CookieUtil.readLoginToken(request));
+
+        User user= JsonUtil.string2Obj(userStr,User.class);
         Map map = Maps.newHashMap();
         if(user == null){
             map.put("msg","未登录");
