@@ -1,11 +1,9 @@
 package com.mmall.controller.protal;
 
 import com.mmall.common.Const;
-import com.mmall.common.RedisPool;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.service.IUserService;
-import com.mmall.service.impl.UserServiceImpl;
 import com.mmall.util.CookieUtil;
 import com.mmall.util.JedisUtil;
 import com.mmall.util.JsonUtil;
