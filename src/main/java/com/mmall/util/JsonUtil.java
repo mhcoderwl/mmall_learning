@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 
 public class JsonUtil {
     private static ObjectMapper objectMapper = new ObjectMapper();
-    private static Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
+    private static Logger logger = LoggerFactory.getLogger(JsonUtil.class);
     static{
         //对象的所有字段全部列入
         objectMapper.setSerializationInclusion(JsonSerialize.Inclusion.ALWAYS);

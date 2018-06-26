@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import redis.clients.jedis.ShardedJedis;
 
 public class JedisUtil {
-    public static final Logger logger= LoggerFactory.getLogger(FTPUtil.class);
+    public static final Logger logger= LoggerFactory.getLogger(JedisUtil.class);
     static public String set(String key,String value){
         ShardedJedis jedis=null;
         String result=null;

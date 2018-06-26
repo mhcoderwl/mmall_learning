@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class CookieUtil {
-    public static final Logger logger= LoggerFactory.getLogger(FTPUtil.class);
+    public static final Logger logger= LoggerFactory.getLogger(CookieUtil.class);
     private static final String COOKIE_DOMAIN = ".happymmall.com";//一级域名
     private final static String COOKIE_NAME = "mmall_login_token";
     public static void writeLoginToken(HttpServletResponse response,String token){
